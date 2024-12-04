@@ -3,12 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Defect List</title>
+    <title>Defect Tracker</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 8px; }
-        th { background-color: #f2f2f2; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
         .modal {
             display: none;
             position: fixed;
@@ -41,13 +55,15 @@
             text-decoration: none;
             cursor: pointer;
         }
+        #new-defect {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <h1>Defect List</h1>
-    <button id="selectDir">Select Project Directory</button>
-    <button id="createDefect" disabled>Create Defect</button>
-    <table id="defectTable">
+    <button id="open-folder">Open Folder</button>
+    <button id="new-defect">New Defect</button>
+    <table id="defect-table">
         <thead>
             <tr>
                 <th>ID</th>
@@ -70,36 +86,58 @@
                 <th>Project</th>
             </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+        </tbody>
     </table>
 
-    <div id="createDefectModal" class="modal">
+    <!-- The Modal -->
+    <div id="editModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Create Defect</h2>
-            <form id="defectForm">
-                <label>ID: <input type="number" name="ID" required></label><br>
-                <label>Summary: <input type="text" name="Summary" required></label><br>
-                <label>Description: <textarea name="Description" required></textarea></label><br>
-                <label>Status: <input type="text" name="Status" required></label><br>
-                <label>Type: <input type="text" name="Type" required></label><br>
-                <label>Priority: <input type="text" name="Priority" required></label><br>
-                <label>Milestone: <input type="text" name="Milestone" required></label><br>
-                <label>Component: <input type="text" name="Component" required></label><br>
-                <label>Version: <input type="text" name="Version" required></label><br>
-                <label>Severity: <input type="text" name="Severity" required></label><br>
-                <label>Reporter: <input type="text" name="Reporter" required></label><br>
-                <label>Owner: <input type="text" name="Owner" required></label><br>
-                <label>CC: <input type="text" name="CC"></label><br>
-                <label>Keywords: <input type="text" name="Keywords"></label><br>
-                <label>Resolution: <input type="text" name="Resolution" required></label><br>
-                <label>Time: <input type="datetime-local" name="Time" required></label><br>
-                <label>Changetime: <input type="datetime-local" name="Changetime" required></label><br>
-                <label>Project: <input type="text" name="Project" required></label><br>
-                <button type="submit">Save Defect</button>
+            <h2>Edit Defect</h2>
+            <form id="editForm">
+                <label for="defectId">ID:</label>
+                <input type="text" id="defectId" name="defectId"><br><br>
+                <label for="summary">Summary:</label>
+                <input type="text" id="summary" name="summary"><br><br>
+                <label for="description">Description:</label>
+                <textarea id="description" name="description"></textarea><br><br>
+                <label for="status">Status:</label>
+                <input type="text" id="status" name="status"><br><br>
+                <label for="type">Type:</label>
+                <input type="text" id="type" name="type"><br><br>
+                <label for="priority">Priority:</label>
+                <input type="text" id="priority" name="priority"><br><br>
+                <label for="milestone">Milestone:</label>
+                <input type="text" id="milestone" name="milestone"><br><br>
+                <label for="component">Component:</label>
+                <input type="text" id="component" name="component"><br><br>
+                <label for="version">Version:</label>
+                <input type="text" id="version" name="version"><br><br>
+                <label for="severity">Severity:</label>
+                <input type="text" id="severity" name="severity"><br><br>
+                <label for="reporter">Reporter:</label>
+                <input type="text" id="reporter" name="reporter"><br><br>
+                <label for="owner">Owner:</label>
+                <input type="text" id="owner" name="owner"><br><br>
+                <label for="cc">CC:</label>
+                <input type="text" id="cc" name="cc"><br><br>
+                <label for="keywords">Keywords:</label>
+                <input type="text" id="keywords" name="keywords"><br><br>
+                <label for="resolution">Resolution:</label>
+                <input type="text" id="resolution" name="resolution"><br><br>
+                <label for="time">Time:</label>
+                <input type="text" id="time" name="time"><br><br>
+                <label for="changetime">Changetime:</label>
+                <input type="text" id="changetime" name="changetime"><br><br>
+                <label for="project">Project:</label>
+                <input type="text" id="project" name="project"><br><br>
+                <button type="button" id="saveButton">Save</button>
             </form>
         </div>
     </div>
+
+    <script src="fs-helpers.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
