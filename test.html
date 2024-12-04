@@ -16,6 +16,7 @@
         th {
             background-color: #f2f2f2;
             text-align: left;
+            cursor: pointer;
         }
         tr:nth-child(even) {
             background-color: #f9f9f9;
@@ -58,6 +59,10 @@
         #new-defect {
             display: none;
         }
+        .filter-input {
+            width: 100%;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
@@ -84,6 +89,26 @@
                 <th>Time</th>
                 <th>Changetime</th>
                 <th>Project</th>
+            </tr>
+            <tr>
+                <th><input type="text" class="filter-input" data-column="ID"></th>
+                <th><input type="text" class="filter-input" data-column="Summary"></th>
+                <th><input type="text" class="filter-input" data-column="Description"></th>
+                <th><input type="text" class="filter-input" data-column="Status"></th>
+                <th><input type="text" class="filter-input" data-column="Type"></th>
+                <th><input type="text" class="filter-input" data-column="Priority"></th>
+                <th><input type="text" class="filter-input" data-column="Milestone"></th>
+                <th><input type="text" class="filter-input" data-column="Component"></th>
+                <th><input type="text" class="filter-input" data-column="Version"></th>
+                <th><input type="text" class="filter-input" data-column="Severity"></th>
+                <th><input type="text" class="filter-input" data-column="Reporter"></th>
+                <th><input type="text" class="filter-input" data-column="Owner"></th>
+                <th><input type="text" class="filter-input" data-column="CC"></th>
+                <th><input type="text" class="filter-input" data-column="Keywords"></th>
+                <th><input type="text" class="filter-input" data-column="Resolution"></th>
+                <th><input type="text" class="filter-input" data-column="Time"></th>
+                <th><input type="text" class="filter-input" data-column="Changetime"></th>
+                <th><input type="text" class="filter-input" data-column="Project"></th>
             </tr>
         </thead>
         <tbody>

@@ -1,13 +1,16 @@
 let currentFileHandle;
 let defectsHandle;
 let isNewDefect = false;
+let defects = [];
 
 document.getElementById('open-folder').addEventListener('click', async () => {
     try {
         const dirHandle = await window.showDirectoryPicker();
         defectsHandle = await dirHandle.getDirectoryHandle('defects', { create: false });
         document.getElementById('new-defect').style.display = 'inline-block';
-        updateDefectList();
+        await updateDefectList();
+        addFilterListeners();
+        addSortListeners();
     } catch (err) {
         console.error(err);
     }
@@ -75,7 +78,7 @@ function openEditModal(defect, fileHandle) {
     document.getElementById('priority').value = defect.Priority;
     document.getElementById('milestone').value = defect.Milestone;
     document.getElementById('component').value = defect.Component;
-    document.getElementById('version').value = defect.Version
+    document.getElementById('version').value = defect.Version;
     document.getElementById('severity').value = defect.Severity;
     document.getElementById('reporter').value = defect.Reporter;
     document.getElementById('owner').value = defect.Owner;
@@ -88,54 +91,96 @@ function openEditModal(defect, fileHandle) {
     document.getElementById('editModal').style.display = 'block';
 }
 
-    document.getElementsByClassName('close')[0].addEventListener('click', () => {
-        document.getElementById('editModal').style.display = 'none';
-    });
+document.getElementsByClassName('close')[0].addEventListener('click', () => {
+    document.getElementById('editModal').style.display = 'none';
+});
 
-    document.getElementById('saveButton').addEventListener('click', async () => {
-        const updatedDefect = {
-            ID: document.getElementById('defectId').value,
-            Summary: document.getElementById('summary').value,
-            Description: document.getElementById('description').value,
-            Status: document.getElementById('status').value,
-            Type: document.getElementById('type').value,
-            Priority: document.getElementById('priority').value,
-            Milestone: document.getElementById('milestone').value,
-            Component: document.getElementById('component').value,
-            Version: document.getElementById('version').value,
-            Severity: document.getElementById('severity').value,
-            Reporter: document.getElementById('reporter').value,
-            Owner: document.getElementById('owner').value,
-            CC: document.getElementById('cc').value.split(',').map(item => item.trim()),
-            Keywords: document.getElementById('keywords').value.split(',').map(item => item.trim()),
-            Resolution: document.getElementById('resolution').value,
-            Time: document.getElementById('time').value,
-            Changetime: document.getElementById('changetime').value,
-            Project: document.getElementById('project').value
-        };
-        const updatedContent = JSON.stringify(updatedDefect, null, 2);
+document.getElementById('saveButton').addEventListener('click', async () => {
+    const updatedDefect = {
+        ID: document.getElementById('defectId').value,
+        Summary: document.getElementById('summary').value,
+        Description: document.getElementById('description').value,
+        Status: document.getElementById('status').value,
+        Type: document.getElementById('type').value,
+        Priority: document.getElementById('priority').value,
+        Milestone: document.getElementById('milestone').value,
+        Component: document.getElementById('component').value,
+        Version: document.getElementById('version').value,
+        Severity: document.getElementById('severity').value,
+        Reporter: document.getElementById('reporter').value,
+        Owner: document.getElementById('owner').value,
+        CC: document.getElementById('cc').value.split(',').map(item => item.trim()),
+        Keywords: document.getElementById('keywords').value.split(',').map(item => item.trim()),
+        Resolution: document.getElementById('resolution').value,
+        Time: document.getElementById('time').value,
+        Changetime: document.getElementById('changetime').value,
+        Project: document.getElementById('project').value
+    };
+    const updatedContent = JSON.stringify(updatedDefect, null, 2);
 
-        if (isNewDefect) {
-            const newFileName = `${updatedDefect.ID}.json`;
-            currentFileHandle = await defectsHandle.getFileHandle(newFileName, { create: true });
-        }
+    if (isNewDefect) {
+        const newFileName = `${updatedDefect.ID}.json`;
+        currentFileHandle = await defectsHandle.getFileHandle(newFileName, { create: true });
+    }
 
-        await writeFile(currentFileHandle, updatedContent);
-        document.getElementById('editModal').style.display = 'none';
-        updateDefectList();
-    });
+    await writeFile(currentFileHandle, updatedContent);
+    document.getElementById('editModal').style.display = 'none';
+    updateDefectList();
+});
 
-    async function updateDefectList() {
-        const defectTable = document.getElementById('defect-table').getElementsByTagName('tbody')[0];
-        defectTable.innerHTML = '';
+async function updateDefectList() {
+    const defectTable = document.getElementById('defect-table').getElementsByTagName('tbody')[0];
+    defectTable.innerHTML = '';
+    defects = [];
 
-        for await (const entry of defectsHandle.values()) {
-            if (entry.kind === 'file') {
-                const fileHandle = await defectsHandle.getFileHandle(entry.name);
-                const file = await fileHandle.getFile();
-                const content = await readFile(file);
-                const defect = JSON.parse(content);
-                displayDefect(defect, fileHandle);
-            }
+    for await (const entry of defectsHandle.values()) {
+        if (entry.kind === 'file') {
+            const fileHandle = await defectsHandle.getFileHandle(entry.name);
+            const file = await fileHandle.getFile();
+            const content = await readFile(file);
+            const defect = JSON.parse(content);
+            defects.push({ defect, fileHandle });
         }
     }
+
+    renderDefectList(defects);
+}
+
+function renderDefectList(defects) {
+    const defectTable = document.getElementById('defect-table').getElementsByTagName('tbody')[0];
+    defectTable.innerHTML = '';
+
+    defects.forEach(({ defect, fileHandle }) => {
+        displayDefect(defect, fileHandle);
+    });
+}
+
+function addFilterListeners() {
+    const filterInputs = document.querySelectorAll('.filter-input');
+    filterInputs.forEach(input => {
+        input.addEventListener('input', () => {
+            const filteredDefects = defects.filter(({ defect }) => {
+                return Object.keys(defect).some(key => {
+                    const column = input.getAttribute('data-column');
+                    return key === column && defect[key].toString().toLowerCase().includes(input.value.toLowerCase());
+                });
+            });
+            renderDefectList(filteredDefects);
+        });
+    });
+}
+
+function addSortListeners() {
+    const headers = document.querySelectorAll('#defect-table th');
+    headers.forEach(header => {
+        header.addEventListener('click', () => {
+            const column = header.textContent;
+            const sortedDefects = [...defects].sort((a, b) => {
+                if (a.defect[column] < b.defect[column]) return -1;
+                if (a.defect[column] > b.defect[column]) return 1;
+                return 0;
+            });
+            renderDefectList(sortedDefects);
+        });
+    });
+}
