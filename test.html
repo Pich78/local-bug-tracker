@@ -76,6 +76,14 @@
     <div id="defectModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
+            <h2>Defect Details</h2>
+            <div id="defectDetails"></div>
+        </div>
+    </div>
+
+    <div id="createDefectModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
             <h2>Create Defect</h2>
             <form id="defectForm">
                 <label>ID: <input type="number" name="ID" required></label><br>
@@ -113,11 +121,13 @@
         });
 
         document.getElementById('createDefect').addEventListener('click', () => {
-            document.getElementById('defectModal').style.display = 'block';
+            document.getElementById('createDefectModal').style.display = 'block';
         });
 
-        document.querySelector('.close').addEventListener('click', () => {
-            document.getElementById('defectModal').style.display = 'none';
+        document.querySelectorAll('.close').forEach(closeBtn => {
+            closeBtn.addEventListener('click', () => {
+                closeBtn.parentElement.parentElement.style.display = 'none';
+            });
         });
 
         document.getElementById('defectForm').addEventListener('submit', async (event) => {
@@ -136,7 +146,7 @@
 
             const defects = await loadDefects(defectsDirHandle);
             renderDefects(defects);
-            document.getElementById('defectModal').style.display = 'none';
+            document.getElementById('createDefectModal').style.display = 'none';
             event.target.reset();
         });
 
@@ -167,13 +177,25 @@
                     cell.textContent = defect[field] ? (Array.isArray(defect[field]) ? defect[field].join(', ') : defect[field]) : '';
                     row.appendChild(cell);
                 });
+                row.querySelector('td').addEventListener('click', () => showDefectDetails(defect));
                 tbody.appendChild(row);
             });
         }
 
+        function showDefectDetails(defect) {
+            const defectDetails = document.getElementById('defectDetails');
+            defectDetails.innerHTML = '';
+            for (const [key, value] of Object.entries(defect)) {
+                const p = document.createElement('p');
+                p.textContent = `${key}: ${Array.isArray(value) ? value.join(', ') : value}`;
+                defectDetails.appendChild(p);
+            }
+            document.getElementById('defectModal').style.display = 'block';
+        }
+
         window.onclick = function(event) {
-            if (event.target == document.getElementById('defectModal')) {
-                document.getElementById('defectModal').style.display = 'none';
+            if (event.target == document.getElementById('defectModal') || event.target == document.getElementById('createDefectModal')) {
+                event.target.style.display = 'none';
             }
         }
     </script>
