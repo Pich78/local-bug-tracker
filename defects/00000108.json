@@ -1,0 +1,20 @@
+{
+    "ID": 108,
+    "Summary": "Performance degradation in search functionality",
+    "Description": "Search queries are taking longer than expected to return results.",
+    "Status": "In Progress",
+    "Type": "Defect",
+    "Priority": "High",
+    "Milestone": "Release 1.2",
+    "Component": "Search",
+    "Version": "1.1.0",
+    "Severity": "Critical",
+    "Reporter": "charlie",
+    "Owner": "dave",
+    "CC": ["search_team", "qa"],
+    "Keywords": ["performance", "search", "slow"],
+    "Resolution": "Unresolved",
+    "Time": "2024-12-01 14:45:00",
+    "Changetime": "2024-12-01 15:30:00",
+    "Project": "Project C"
+}

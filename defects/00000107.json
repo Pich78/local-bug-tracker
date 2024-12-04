@@ -1,0 +1,20 @@
+{
+    "ID": 107,
+    "Summary": "UI alignment issue on dashboard",
+    "Description": "The dashboard widgets are misaligned on smaller screen resolutions.",
+    "Status": "Open",
+    "Type": "Defect",
+    "Priority": "Medium",
+    "Milestone": "Release 1.1",
+    "Component": "UI",
+    "Version": "1.0.1",
+    "Severity": "Major",
+    "Reporter": "alice",
+    "Owner": "bob",
+    "CC": ["ui_team", "qa"],
+    "Keywords": ["ui", "alignment", "dashboard"],
+    "Resolution": "Unresolved",
+    "Time": "2024-12-02 09:30:00",
+    "Changetime": "2024-12-02 10:00:00",
+    "Project": "Project B"
+}

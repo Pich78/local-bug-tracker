@@ -1,0 +1,19 @@
+{
+    "ID": 105,
+    "Summary": "Crash on startup",
+    "Description": "The application crashes on startup on Windows 10.",
+    "Status": "Open",
+    "Type": "Defect",
+    "Priority": "Critical",
+    "Milestone": "Release 1.4",
+    "Component": "Core",
+    "Version": "1.3.0",
+    "Severity": "Critical",
+    "Owner": "hannah",
+    "CC": ["core_team", "qa"],
+    "Keywords": ["crash", "startup", "windows"],
+    "Resolution": "Unresolved",
+    "Time": "2024-11-29 08:15:00",
+    "Changetime": "2024-11-29 09:00:00",
+    "Project": "Project C"
+}

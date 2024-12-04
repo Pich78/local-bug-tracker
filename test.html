@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defect List</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Defect List</h1>
+    <button id="selectDir">Select Project Directory</button>
+    <table id="defectTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Summary</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Type</th>
+                <th>Priority</th>
+                <th>Milestone</th>
+                <th>Component</th>
+                <th>Version</th>
+                <th>Severity</th>
+                <th>Reporter</th>
+                <th>Owner</th>
+                <th>CC</th>
+                <th>Keywords</th>
+                <th>Resolution</th>
+                <th>Time</th>
+                <th>Changetime</th>
+                <th>Project</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        document.getElementById('selectDir').addEventListener('click', async () => {
+            const directoryHandle = await window.showDirectoryPicker();
+            const defectsDirHandle = await directoryHandle.getDirectoryHandle('defects', { create: false });
+            const defects = await loadDefects(defectsDirHandle);
+            renderDefects(defects);
+        });
+
+        async function loadDefects(directoryHandle) {
+            const defects = [];
+            for await (const entry of directoryHandle.values()) {
+                if (entry.kind === 'file' && entry.name.endsWith('.json')) {
+                    const file = await entry.getFile();
+                    const content = await file.text();
+                    defects.push(JSON.parse(content));
+                }
+            }
+            return defects;
+        }
+
+        function renderDefects(defects) {
+            const tbody = document.querySelector('#defectTable tbody');
+            tbody.innerHTML = '';
+            defects.forEach(defect => {
+                const row = document.createElement('tr');
+                const fields = [
+                    'ID', 'Summary', 'Description', 'Status', 'Type', 'Priority', 'Milestone', 'Component', 
+                    'Version', 'Severity', 'Reporter', 'Owner', 'CC', 'Keywords', 'Resolution', 'Time', 
+                    'Changetime', 'Project'
+                ];
+                fields.forEach(field => {
+                    const cell = document.createElement('td');
+                    cell.textContent = defect[field] ? (Array.isArray(defect[field]) ? defect[field].join(', ') : defect[field]) : '';
+                    row.appendChild(cell);
+                });
+                tbody.appendChild(row);
+            });
+        }
+    </script>
+</body>
+</html>

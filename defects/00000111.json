@@ -1,0 +1,20 @@
+{
+    "ID": 111,
+    "Summary": "Fix login bug",
+    "Description": "Users are unable to log in due to a server error. The issue seems to be related to the authentication module.",
+    "Status": "New",
+    "Type": "Defect",
+    "Priority": "High",
+    "Milestone": "Release 1.0",
+    "Component": "Authentication",
+    "Version": "1.0.0",
+    "Severity": "Critical",
+    "Reporter": "johndoe",
+    "Owner": "janedoe",
+    "CC": ["teamlead", "qa"],
+    "Keywords": ["login", "bug", "urgent"],
+    "Resolution": "Unresolved",
+    "Time": "2024-12-03 12:00:00",
+    "Changetime": "2024-12-03 12:15:00",
+    "Project": "Project A"
+}
