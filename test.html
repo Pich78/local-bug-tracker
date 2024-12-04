@@ -73,14 +73,6 @@
         <tbody></tbody>
     </table>
 
-    <div id="defectModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Defect Details</h2>
-            <div id="defectDetails"></div>
-        </div>
-    </div>
-
     <div id="createDefectModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -177,25 +169,28 @@
                     cell.textContent = defect[field] ? (Array.isArray(defect[field]) ? defect[field].join(', ') : defect[field]) : '';
                     row.appendChild(cell);
                 });
-                row.querySelector('td').addEventListener('click', () => showDefectDetails(defect));
+                row.querySelector('td').addEventListener('click', () => openDefectWindow(defect));
                 tbody.appendChild(row);
             });
         }
 
-        function showDefectDetails(defect) {
-            const defectDetails = document.getElementById('defectDetails');
-            defectDetails.innerHTML = '';
+        function openDefectWindow(defect) {
+            const defectWindow = window.open('', 'Defect Details', 'width=600,height=600');
+            const doc = defectWindow.document;
+
+            doc.open();
+            doc.write('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Defect Details</title></head><body>');
+            doc.write('<h2>Defect Details</h2>');
             for (const [key, value] of Object.entries(defect)) {
-                const p = document.createElement('p');
-                p.textContent = `${key}: ${Array.isArray(value) ? value.join(', ') : value}`;
-                defectDetails.appendChild(p);
+                doc.write(`<p><strong>${key}:</strong> ${Array.isArray(value) ? value.join(', ') : value}</p>`);
             }
-            document.getElementById('defectModal').style.display = 'block';
+            doc.write('</body></html>');
+            doc.close();
         }
 
         window.onclick = function(event) {
-            if (event.target == document.getElementById('defectModal') || event.target == document.getElementById('createDefectModal')) {
-                event.target.style.display = 'none';
+            if (event.target == document.getElementById('createDefectModal')) {
+                document.getElementById('createDefectModal').style.display = 'none';
             }
         }
     </script>
